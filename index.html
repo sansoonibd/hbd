@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            height: 100%;
+            color: #333;
+            background: url('sansback.jpg') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 95%;
+            margin: 0 auto;
+            padding: clamp(10px, 3vw, 20px);
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            margin-top: clamp(10px, 3vw, 20px);
+            box-sizing: border-box;
+        }
+        .heart {
+            color: #ff4136;
+            font-size: clamp(2rem, 5vw, 3rem);
+            animation: pulse 1.5s infinite;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            margin-bottom: 20px;
+            color: #333;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            padding: 0 10px;
+        }
+        .message {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: clamp(10px, 3vw, 20px);
+            padding: clamp(10px, 3vw, 20px);
+            margin-top: clamp(15px, 4vw, 30px);
+        }
+        .gallery img {
+            width: 100%;
+            height: clamp(180px, 30vw, 250px);
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        .countdown {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            margin: 20px auto;
+            color: #333;
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            max-width: 90%;
+        }
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: clamp(20px, 5vw, 30px);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            margin: 10px;
+            box-sizing: border-box;
+        }
+        .login-box h2 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 15px;
+        }
+        .login-box p {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            margin-bottom: 20px;
+        }
+        .login-box input {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ee9ca7;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .login-box button {
+            width: 100%;
+            background: #ee9ca7;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            transition: background 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin-top: 10px;
+            }
+            .gallery {
+                padding: 10px;
+                gap: 15px;
+            }
+            .message {
+                padding: 15px;
+                margin: 0 10px 20px;
+            }
+            .countdown {
+                padding: 10px;
+                margin: 15px auto;
+            }
+        }
+        @media (max-width: 480px) {
+            .message {
+                padding: 15px;
+                margin: 0 auto 20px;
+            }
+            .gallery {
+                padding: 10px;
+            }
+            .login-box {
+                width: 95%;
+                padding: 15px;
+            }
+            .countdown {
+                padding: 8px;
+            }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h2>Enter Password</h2>
+            <p>Please enter the secret password to view Sansooni's birthday message ❤️</p>
+            <input type="password" id="passwordInput" placeholder="Enter password">
+            <button onclick="checkPassword()">Enter</button>
+        </div>
+    </div>
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <div class="heart">❤️</div>
+            <h1>Happy Birthday, Semsema!</h1>
+            <div class="message">
+                <p>To the sweetest, loveliest person in the world</p>
+                <p>Today is your special day, and I wanted to create something as unique and beautiful as you are. Every moment with you is a gift, and I'm grateful for your love, your smile, and the joy you bring to my life.</p>
+            </div>
+            <div class="countdown" id="countdown"></div>
+            <div class="gallery">
+                <img src="photo1.jpg" alt="Memories together">
+                <img src="photo2.jpg" alt="Special moment">
+                <img src="photo3.jpg" alt="Our love">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === 'sansooni') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                alert('Incorrect password. Please try again!');
+            }
+        }
+
+        // Add enter key support
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // Countdown to birthday
+        function updateCountdown() {
+            const birthday = new Date('2024-02-14'); // Replace with her actual birthday
+            const now = new Date();
+            const difference = birthday - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+            document.getElementById('countdown').innerHTML = 
+                `Countdown to your special day: ${days} days, ${hours} hours, ${minutes} minutes`;
+        }
+
+        // Update countdown every minute
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+
+        // Optional: Add some interactive love notes
+        const messages = [
+            "You're my everything.",
+            "Your smile lights up my world.",
+            "I love you more than words can express.",
+            "You're the most beautiful person inside and out."
+        ];
+
+        // Randomly change message on click
+        document.querySelector('.message').addEventListener('click', function() {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            this.innerHTML = `<p>${randomMessage}</p>`;
+        });
+    </script>
+</body>
+</html>
