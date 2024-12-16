@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Memories Together</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Roboto', sans-serif;
+            background: #ffd1dc;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: white;
+            transition: transform 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            color: #333;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            font-weight: bold;
+        }
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Our Beautiful Memories Together ❤️</h1>
+        <a href="private.html" style="
+            display: inline-block;
+            margin: 0 0 20px 20px;
+            padding: 12px 24px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        ">Private Gallery 🔒</a>
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="sans 2.jpg" alt="Memory with Sans">
+            </div>
+            <div class="gallery-item">
+                <img src="sans 3.jpg" alt="Memory with Sans">
+            </div>
+            <div class="gallery-item">
+                <img src="sans 4.jpg" alt="Memory with Sans">
+            </div>
+            <div class="gallery-item">
+                <img src="sans 5.jpg" alt="Memory with Sans">
+            </div>
+            <div class="gallery-item">
+                <img src="sans 6.jpg" alt="Memory with Sans">
+            </div>
+        </div>
+    </div>
+    <a href="index.html" class="back-button">Back to Birthday Message ❤️</a>
+</body>
+</html>

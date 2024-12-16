@@ -12,14 +12,11 @@
             font-family: 'Roboto', sans-serif;
             height: 100%;
             color: #333;
-            background: url('sansback.jpg') no-repeat center center fixed;
-            -webkit-background-size: cover;
-            -moz-background-size: cover;
-            -o-background-size: cover;
-            background-size: cover;
+            background: #ffd1dc;
             box-sizing: border-box;
         }
         .container {
+            display: none;  
             max-width: 95%;
             margin: 0 auto;
             padding: clamp(10px, 3vw, 20px);
@@ -51,19 +48,31 @@
             padding: 20px;
             border-radius: 10px;
         }
+        .memories-title {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #333;
+            margin: 20px 0;
+            padding: 10px;
+            background: rgba(255, 209, 220, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .memories-title:hover {
+            background: rgba(255, 209, 220, 0.6);
+            transform: scale(1.05);
+        }
         .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: clamp(10px, 3vw, 20px);
-            padding: clamp(10px, 3vw, 20px);
-            margin-top: clamp(15px, 4vw, 30px);
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
         }
         .gallery img {
             width: 100%;
-            height: clamp(180px, 30vw, 250px);
-            object-fit: cover;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
         }
         .gallery img:hover {
@@ -78,43 +87,54 @@
             border-radius: 10px;
             max-width: 90%;
         }
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffd1dc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
         .login-box {
             background: rgba(255, 255, 255, 0.95);
-            padding: clamp(20px, 5vw, 30px);
+            padding: 40px;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 90%;
             max-width: 400px;
-            margin: 10px;
-            box-sizing: border-box;
+            width: 90%;
         }
         .login-box h2 {
-            font-size: clamp(1.5rem, 4vw, 2rem);
-            margin-bottom: 15px;
-        }
-        .login-box p {
-            font-size: clamp(0.9rem, 3vw, 1.1rem);
             margin-bottom: 20px;
+            color: #333;
+            font-family: 'Playfair Display', serif;
         }
         .login-box input {
-            width: calc(100% - 24px);
+            width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 2px solid #ee9ca7;
+            border: 2px solid #ffd1dc;
             border-radius: 8px;
             font-size: 16px;
+            box-sizing: border-box;
         }
         .login-box button {
-            width: 100%;
-            background: #ee9ca7;
-            color: white;
+            background: #ffd1dc;
+            color: #333;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
-            font-size: clamp(0.9rem, 3vw, 1.1rem);
-            transition: background 0.3s ease;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        .login-box button:hover {
+            background: #ffb6c1;
         }
         @media (max-width: 768px) {
             .container {
@@ -155,44 +175,88 @@
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .gallery-item {
+            position: relative;
+        }
+        .gallery-caption {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <h2>Enter Password</h2>
-            <p>Please enter the secret password to view Sansooni's birthday message ❤️</p>
+            <p>Please enter the secret password to view Sansooni's birthday message </p>
             <input type="password" id="passwordInput" placeholder="Enter password">
             <button onclick="checkPassword()">Enter</button>
         </div>
     </div>
     <div class="main-content" id="mainContent">
         <div class="container">
-            <div class="heart">❤️</div>
+            <div class="heart"></div>
             <h1>Happy Birthday, Semsema!</h1>
             <div class="message">
                 <p>To the sweetest, loveliest person in the world</p>
                 <p>Today is your special day, and I wanted to create something as unique and beautiful as you are. Every moment with you is a gift, and I'm grateful for your love, your smile, and the joy you bring to my life.</p>
             </div>
-            <div class="countdown" id="countdown"></div>
-            <div class="gallery">
-                <img src="photo1.jpg" alt="Memories together">
-                <img src="photo2.jpg" alt="Special moment">
-                <img src="photo3.jpg" alt="Our love">
+            <div style="display: flex; gap: 20px; justify-content: center; margin: 20px 0;">
+                <a href="memories.html" style="
+                    display: inline-block;
+                    padding: 15px 30px;
+                    background: rgba(255, 209, 220, 0.3);
+                    color: #333;
+                    text-decoration: none;
+                    border-radius: 25px;
+                    font-size: 1.2rem;
+                    transition: all 0.3s ease;
+                ">Memories Together ❤️</a>
+                <a href="private.html" style="
+                    display: inline-block;
+                    padding: 15px 30px;
+                    background: rgba(255, 209, 220, 0.3);
+                    color: #333;
+                    text-decoration: none;
+                    border-radius: 25px;
+                    font-size: 1.2rem;
+                    transition: all 0.3s ease;
+                ">Private 🔒</a>
             </div>
+            <div class="countdown" id="countdown"></div>
         </div>
     </div>
 
     <script>
         function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === 'sansooni') {
+            var password = document.getElementById('passwordInput').value;
+            if (password === '0314') {
+                localStorage.setItem('isLoggedIn', 'true');
                 document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
+                document.querySelector('.container').style.display = 'block';
+                updateCountdown();
             } else {
                 alert('Incorrect password. Please try again!');
             }
         }
+
+        // Check if already logged in when page loads
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.querySelector('.container').style.display = 'block';
+                updateCountdown();
+            }
+        };
 
         // Add enter key support
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
@@ -232,6 +296,16 @@
             const randomMessage = messages[Math.floor(Math.random() * messages.length)];
             this.innerHTML = `<p>${randomMessage}</p>`;
         });
+
+        // Add this new function
+        function toggleGallery() {
+            const gallery = document.getElementById('photoGallery');
+            if (gallery.style.display === 'grid') {
+                gallery.style.display = 'none';
+            } else {
+                gallery.style.display = 'grid';
+            }
+        }
     </script>
 </body>
 </html>
