@@ -57,6 +57,8 @@
             background: rgba(255, 209, 220, 0.3);
             border-radius: 10px;
             transition: all 0.3s ease;
+            flex: 0 1 auto;
+            min-width: 200px;
         }
         .memories-title:hover {
             background: rgba(255, 209, 220, 0.6);
@@ -146,6 +148,76 @@
             z-index: 100;
         }
 
+        .game-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 209, 220, 0.95);
+            z-index: 1000;
+        }
+        .game-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .game-heart {
+            position: absolute;
+            font-size: clamp(2rem, 8vw, 3rem);  
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+            touch-action: none;  
+        }
+        .game-heart:hover {
+            transform: scale(1.2);
+        }
+        .game-score {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1001;
+        }
+        .game-start-btn, .game-close-btn {
+            background: #ff4136;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 1.2rem;
+        }
+        .game-start-btn:hover, .game-close-btn:hover {
+            background: #ff6b6b;
+        }
+        .game-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1001;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
         @keyframes floatHeart {
             0% {
                 transform: translateY(0) scale(1);
@@ -227,34 +299,32 @@
     <div class="main-content" id="mainContent">
         <div class="container">
             <div class="heart"></div>
-            <h1>Happy Birthday, Semsema!</h1>
+            <h1>Happy Birthday, Semsema! <span class="heart">❤️</span></h1>
             <div class="message">
                 <p>To the sweetest, loveliest person in the world</p>
                 <p>Today is your special day, and I wanted to create something as unique and beautiful as you are. Every moment with you is a gift, and I'm grateful for your love, your smile, and the joy you bring to my life.</p>
-            </div>
-            <div style="display: flex; gap: 20px; justify-content: center; margin: 20px 0;">
-                <a href="memories.html" style="
-                    display: inline-block;
-                    padding: 15px 30px;
-                    background: rgba(255, 209, 220, 0.3);
-                    color: #333;
-                    text-decoration: none;
-                    border-radius: 25px;
-                    font-size: 1.2rem;
-                    transition: all 0.3s ease;
-                ">Memories Together ❤️</a>
-                <a href="private.html" style="
-                    display: inline-block;
-                    padding: 15px 30px;
-                    background: rgba(255, 209, 220, 0.3);
-                    color: #333;
-                    text-decoration: none;
-                    border-radius: 25px;
-                    font-size: 1.2rem;
-                    transition: all 0.3s ease;
-                ">Private 🔒</a>
+                <p>Happy Birthday, my love! 🎂✨</p>
             </div>
             <div class="countdown" id="countdown"></div>
+            <div class="button-container">
+                <div class="memories-title" onclick="toggleGallery()">Memories Together ❤️</div>
+                <div class="memories-title" onclick="startGame()">Little Game ❤️</div>
+                <a href="private.html" class="memories-title">Private 🔒</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <div class="game-score">Score: <span id="score">0</span></div>
+        <div class="game-content" id="gameContent"></div>
+        <div class="game-menu" id="gameMenu">
+            <h2>Catch the Hearts!</h2>
+            <p>Click the hearts to catch them and earn points!</p>
+            <p>❤️ = 1 point</p>
+            <p>💖 = 3 points</p>
+            <p>💝 = 5 points</p>
+            <button class="game-start-btn" onclick="startGameplay()">Start Game</button>
+            <button class="game-close-btn" onclick="closeGame()">Close</button>
         </div>
     </div>
 
@@ -273,7 +343,10 @@
 
         // Check if already logged in when page loads
         window.onload = function() {
-            if (localStorage.getItem('isLoggedIn') === 'true') {
+            if (!localStorage.getItem('isLoggedIn')) {
+                document.getElementById('loginOverlay').style.display = 'flex';
+                document.querySelector('.container').style.display = 'none';
+            } else {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.querySelector('.container').style.display = 'block';
                 updateCountdown();
@@ -327,6 +400,102 @@
             } else {
                 gallery.style.display = 'grid';
             }
+        }
+
+        // Game Logic
+        let gameInterval;
+        let score = 0;
+        let isPlaying = false;
+
+        function startGame() {
+            document.getElementById('gameContainer').style.display = 'block';
+            document.getElementById('gameMenu').style.display = 'block';
+            document.getElementById('score').textContent = '0';
+            score = 0;
+        }
+
+        function closeGame() {
+            document.getElementById('gameContainer').style.display = 'none';
+            stopGame();
+        }
+
+        function startGameplay() {
+            document.getElementById('gameMenu').style.display = 'none';
+            isPlaying = true;
+            gameInterval = setInterval(createHeart, 1500);
+        }
+
+        function stopGame() {
+            isPlaying = false;
+            clearInterval(gameInterval);
+            const hearts = document.getElementsByClassName('game-heart');
+            while(hearts.length > 0) {
+                hearts[0].remove();
+            }
+        }
+
+        function createHeart() {
+            if (!isPlaying) return;
+            
+            const heart = document.createElement('div');
+            heart.className = 'game-heart';
+            
+            // Random heart type
+            const heartTypes = [
+                {symbol: '❤️', points: 1, probability: 0.7},
+                {symbol: '💖', points: 3, probability: 0.2},
+                {symbol: '💝', points: 5, probability: 0.1}
+            ];
+            
+            const rand = Math.random();
+            let selectedHeart = heartTypes[0];
+            let probSum = 0;
+            
+            for (let type of heartTypes) {
+                probSum += type.probability;
+                if (rand <= probSum) {
+                    selectedHeart = type;
+                    break;
+                }
+            }
+            
+            heart.textContent = selectedHeart.symbol;
+            heart.dataset.points = selectedHeart.points;
+            
+            // Random position and movement
+            const gameContent = document.getElementById('gameContent');
+            const maxX = gameContent.clientWidth - 50;
+            const maxY = gameContent.clientHeight - 50;
+            
+            heart.style.left = Math.random() * maxX + 'px';
+            heart.style.top = '-50px';
+            
+            // Add both click and touch events
+            const catchHeart = function() {
+                score += parseInt(this.dataset.points);
+                document.getElementById('score').textContent = score;
+                this.remove();
+            };
+            
+            heart.onclick = catchHeart;
+            heart.ontouchstart = function(e) {
+                e.preventDefault();  
+                catchHeart.call(this);
+            };
+            
+            gameContent.appendChild(heart);
+            
+            // Slower animation (increased from 3000-5000 to 5000-8000 milliseconds)
+            const duration = 5000 + Math.random() * 3000;
+            const animation = heart.animate([
+                { top: '-50px' },
+                { top: maxY + 'px' }
+            ], {
+                duration: duration,
+                easing: 'linear'
+            });
+            
+            animation.onfinish = () => heart.remove();
         }
     </script>
 </body>
