@@ -522,6 +522,10 @@
         let multiplier = 1;
         let combo = 0;
         let lastCatchTime = 0;
+        let gameSpeed = 1;
+        let spawnRate = 1500;
+        let gameTime = 0;
+        let speedInterval;
 
         function startGame() {
             document.getElementById('gameContainer').style.display = 'block';
@@ -650,7 +654,8 @@
             
             gameContent.appendChild(heart);
             
-            const duration = 5000 + Math.random() * 3000;
+            const baseDuration = 5000;
+            const duration = (baseDuration / gameSpeed) + (Math.random() * 3000 / gameSpeed);
             const animation = heart.animate([
                 { top: '-50px' },
                 { top: maxY + 'px' }
@@ -745,7 +750,8 @@
             
             gameContent.appendChild(powerup);
             
-            const duration = 6000 + Math.random() * 3000;
+            const baseDuration = 6000;
+            const duration = (baseDuration / gameSpeed) + (Math.random() * 3000 / gameSpeed);
             const animation = powerup.animate([
                 { top: '-50px' },
                 { top: maxY + 'px' }
@@ -806,8 +812,8 @@
             
             gameContent.appendChild(flag);
             
-            // Animation
-            const duration = 5000 + Math.random() * 3000;
+            const baseDuration = 5000;
+            const duration = (baseDuration / gameSpeed) + (Math.random() * 3000 / gameSpeed);
             const animation = flag.animate([
                 { top: '-50px' },
                 { top: maxY + 'px' }
@@ -859,7 +865,46 @@
         function startGameplay() {
             document.getElementById('gameMenu').style.display = 'none';
             isPlaying = true;
-            gameInterval = setInterval(createHeart, 1500);
+            gameSpeed = 1;
+            spawnRate = 1500;
+            gameTime = 0;
+            
+            // Start the main game interval
+            gameInterval = setInterval(createHeart, spawnRate);
+            
+            // Start speed increase interval
+            speedInterval = setInterval(increaseSpeed, 10000); // Every 10 seconds
+        }
+
+        function increaseSpeed() {
+            if (!isPlaying) return;
+            
+            gameTime += 10;
+            gameSpeed = Math.min(2.5, 1 + (gameTime / 60)); // Max 2.5x speed after 90 seconds
+            spawnRate = Math.max(600, 1500 - (gameTime * 5)); // Min 600ms spawn rate
+            
+            // Update the interval
+            clearInterval(gameInterval);
+            gameInterval = setInterval(createHeart, spawnRate);
+        }
+
+        function stopGame() {
+            isPlaying = false;
+            clearInterval(gameInterval);
+            clearInterval(speedInterval);
+            gameSpeed = 1;
+            const hearts = document.getElementsByClassName('game-heart');
+            while(hearts.length > 0) {
+                hearts[0].remove();
+            }
+            const flags = document.getElementsByClassName('game-flag');
+            while(flags.length > 0) {
+                flags[0].remove();
+            }
+            const powerUps = document.getElementsByClassName('game-powerup');
+            while(powerUps.length > 0) {
+                powerUps[0].remove();
+            }
         }
 
         function closeGame() {
@@ -874,23 +919,6 @@
             }
             // Show the main content
             document.querySelector('.container').style.display = 'block';
-        }
-
-        function stopGame() {
-            isPlaying = false;
-            clearInterval(gameInterval);
-            const hearts = document.getElementsByClassName('game-heart');
-            while(hearts.length > 0) {
-                hearts[0].remove();
-            }
-            const flags = document.getElementsByClassName('game-flag');
-            while(flags.length > 0) {
-                flags[0].remove();
-            }
-            const powerUps = document.getElementsByClassName('game-powerup');
-            while(powerUps.length > 0) {
-                powerUps[0].remove();
-            }
         }
     </script>
 </body>
