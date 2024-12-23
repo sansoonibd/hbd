@@ -298,6 +298,89 @@
             font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            color: #333;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+
+        .game-intro {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            margin: 10px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .game-intro h2 {
+            color: #ff69b4;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .item-category {
+            background: rgba(255, 209, 220, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .item-category h3 {
+            color: #ff4081;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .item-row {
+            display: inline-flex;
+            align-items: center;
+            margin: 5px;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+        }
+
+        .item-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .item-description {
+            font-size: 13px;
+            color: #333;
+        }
+
+        .start-button {
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-top: 15px;
+        }
+
+        .start-button:hover {
+            transform: scale(1.05);
+            background: #ff4081;
+        }
     </style>
 </head>
 <body>
@@ -329,23 +412,59 @@
     </div>
 
     <div class="game-container" id="gameContainer">
-        <div class="game-score">Score: <span id="score">0</span></div>
-        <div class="game-content" id="gameContent"></div>
-        <div class="game-menu" id="gameMenu">
-            <h2>Catch the Hearts!</h2>
-            <p>Click the hearts to catch them and earn points!</p>
-            <p>❤️ = 1 point</p>
-            <p>💖 = 3 points</p>
-            <p>💝 = 5 points</p>
-            <button class="game-start-btn" onclick="startGameplay()">Start Game</button>
-            <button class="game-close-btn" onclick="closeGame()">Close</button>
+        <div class="game-content" id="gameContent">
+            <div class="game-score">Score: <span id="score">0</span></div>
+            <div class="game-menu" id="gameMenu">
+                <div class="game-intro">
+                    <h2>Heart Catcher! ❤️</h2>
+                    
+                    <div class="item-category">
+                        <h3>Hearts</h3>
+                        <div class="item-row">
+                            <div class="item-icon">❤️</div>
+                            <div class="item-description">1 point</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-icon">💖</div>
+                            <div class="item-description">3 points</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-icon">💝</div>
+                            <div class="item-description">5 points</div>
+                        </div>
+                    </div>
+
+                    <div class="item-category">
+                        <h3>Power-Ups</h3>
+                        <div class="item-row">
+                            <div class="item-icon">⭐</div>
+                            <div class="item-description">2x points (10s)</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-icon">🌟</div>
+                            <div class="item-description">3x points (5s)</div>
+                        </div>
+                    </div>
+
+                    <div class="item-category">
+                        <h3>Watch Out!</h3>
+                        <div class="item-row">
+                            <div class="item-icon">🏳️‍🌈</div>
+                            <div class="item-description">-2 points</div>
+                        </div>
+                    </div>
+
+                    <button class="start-button" onclick="startGameplay()">Start Game</button>
+                </div>
+            </div>
         </div>
+        <a href="#" class="back-button" onclick="closeGame()">Back to Birthday Message ❤️</a>
     </div>
 
     <script>
         function checkPassword() {
             var password = document.getElementById('passwordInput').value;
-            if (password === '0314') {
+            if (password === 'sansooni') {
                 localStorage.setItem('isLoggedIn', 'true');
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.querySelector('.container').style.display = 'block';
@@ -746,6 +865,15 @@
         function closeGame() {
             document.getElementById('gameContainer').style.display = 'none';
             stopGame();
+            // Reset score and remove any remaining items
+            score = 0;
+            document.getElementById('score').textContent = '0';
+            // Reset multiplier if it exists
+            if (document.getElementById('multiplierDisplay')) {
+                document.getElementById('multiplierDisplay').remove();
+            }
+            // Show the main content
+            document.querySelector('.container').style.display = 'block';
         }
 
         function stopGame() {
