@@ -80,15 +80,6 @@
         .gallery img:hover {
             transform: scale(1.05);
         }
-        .countdown {
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
-            margin: 20px auto;
-            color: #333;
-            padding: 10px;
-            background: rgba(255,255,255,0.9);
-            border-radius: 10px;
-            max-width: 90%;
-        }
         .login-overlay {
             position: fixed;
             top: 0;
@@ -138,16 +129,6 @@
         .login-box button:hover {
             background: #ffb6c1;
         }
-        .floating-heart {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            font-size: 2rem;
-            color: #ff4136;
-            animation: floatHeart 3s ease-in-out infinite;
-            z-index: 100;
-        }
-
         .game-container {
             display: none;
             position: fixed;
@@ -164,16 +145,54 @@
             height: 100%;
             overflow: hidden;
         }
-        .game-heart {
+        .game-heart, .game-flag, .game-powerup {
             position: absolute;
-            font-size: clamp(2rem, 8vw, 3rem);  
+            font-size: 30px;
             cursor: pointer;
             user-select: none;
-            transition: transform 0.1s;
-            touch-action: none;  
+            transition: transform 0.2s;
         }
-        .game-heart:hover {
+        
+        .game-heart:hover, .game-flag:hover, .game-powerup:hover {
             transform: scale(1.2);
+        }
+
+        .game-powerup {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .score-multiplier {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: rgba(255, 182, 193, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .combo-text {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            color: #ff69b4;
+            font-weight: bold;
+            font-size: 20px;
+            z-index: 1000;
+        }
+
+        .special-effect {
+            position: absolute;
+            pointer-events: none;
+            z-index: 999;
         }
         .game-score {
             position: fixed;
@@ -263,11 +282,6 @@
                 padding: 8px;
             }
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -287,7 +301,7 @@
     </style>
 </head>
 <body>
-    <div class="floating-heart">❤️</div>
+    
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <h2>Enter Password</h2>
@@ -305,10 +319,10 @@
                 <p>Today is your special day, and I wanted to create something as unique and beautiful as you are. Every moment with you is a gift, and I'm grateful for your love, your smile, and the joy you bring to my life.</p>
                 <p>Happy Birthday, my love! 🎂✨</p>
             </div>
-            <div class="countdown" id="countdown"></div>
             <div class="button-container">
-                <div class="memories-title" onclick="toggleGallery()">Memories Together ❤️</div>
+                <a href="memories.html" class="memories-title">Our Memories Together ❤️</a>
                 <div class="memories-title" onclick="startGame()">Little Game ❤️</div>
+                <a href="letter.html" class="memories-title">For You ❤️</a>
                 <a href="private.html" class="memories-title">Private 🔒</a>
             </div>
         </div>
@@ -335,7 +349,6 @@
                 localStorage.setItem('isLoggedIn', 'true');
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.querySelector('.container').style.display = 'block';
-                updateCountdown();
             } else {
                 alert('Incorrect password. Please try again!');
             }
@@ -349,7 +362,6 @@
             } else {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.querySelector('.container').style.display = 'block';
-                updateCountdown();
             }
         };
 
@@ -359,24 +371,6 @@
                 checkPassword();
             }
         });
-
-        // Countdown to birthday
-        function updateCountdown() {
-            const birthday = new Date('2024-02-14'); // Replace with her actual birthday
-            const now = new Date();
-            const difference = birthday - now;
-
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
-            document.getElementById('countdown').innerHTML = 
-                `Countdown to your special day: ${days} days, ${hours} hours, ${minutes} minutes`;
-        }
-
-        // Update countdown every minute
-        updateCountdown();
-        setInterval(updateCountdown, 60000);
 
         // Optional: Add some interactive love notes
         const messages = [
@@ -406,54 +400,73 @@
         let gameInterval;
         let score = 0;
         let isPlaying = false;
+        let multiplier = 1;
+        let combo = 0;
+        let lastCatchTime = 0;
 
         function startGame() {
             document.getElementById('gameContainer').style.display = 'block';
             document.getElementById('gameMenu').style.display = 'block';
             document.getElementById('score').textContent = '0';
             score = 0;
+            multiplier = 1;
+            combo = 0;
+            updateMultiplierDisplay();
         }
 
-        function closeGame() {
-            document.getElementById('gameContainer').style.display = 'none';
-            stopGame();
-        }
-
-        function startGameplay() {
-            document.getElementById('gameMenu').style.display = 'none';
-            isPlaying = true;
-            gameInterval = setInterval(createHeart, 1500);
-        }
-
-        function stopGame() {
-            isPlaying = false;
-            clearInterval(gameInterval);
-            const hearts = document.getElementsByClassName('game-heart');
-            while(hearts.length > 0) {
-                hearts[0].remove();
+        function updateMultiplierDisplay() {
+            let multiplierDisplay = document.getElementById('multiplierDisplay');
+            if (!multiplierDisplay) {
+                multiplierDisplay = document.createElement('div');
+                multiplierDisplay.id = 'multiplierDisplay';
+                multiplierDisplay.className = 'score-multiplier';
+                document.getElementById('gameContainer').appendChild(multiplierDisplay);
             }
+            multiplierDisplay.textContent = `Multiplier: x${multiplier}`;
+        }
+
+        function showComboText() {
+            let comboText = document.createElement('div');
+            comboText.className = 'combo-text';
+            comboText.textContent = `${combo} Combo!`;
+            document.getElementById('gameContainer').appendChild(comboText);
+            
+            setTimeout(() => comboText.remove(), 1000);
         }
 
         function createHeart() {
             if (!isPlaying) return;
             
+            const rand = Math.random();
+            
+            // 35% chance to create a flag, 10% chance to create a power-up
+            if (rand < 0.35) {
+                createFlag();
+                return;
+            } else if (rand < 0.45) {
+                createPowerUp();
+                return;
+            }
+            
             const heart = document.createElement('div');
             heart.className = 'game-heart';
             
-            // Random heart type
+            // Random heart type with special effects
             const heartTypes = [
-                {symbol: '❤️', points: 1, probability: 0.7},
+                {symbol: '❤️', points: 1, probability: 0.5},
                 {symbol: '💖', points: 3, probability: 0.2},
-                {symbol: '💝', points: 5, probability: 0.1}
+                {symbol: '💝', points: 5, probability: 0.15},
+                {symbol: '💕', points: 2, probability: 0.1},
+                {symbol: '💓', points: 4, probability: 0.05}
             ];
             
-            const rand = Math.random();
+            const heartRand = Math.random();
             let selectedHeart = heartTypes[0];
             let probSum = 0;
             
             for (let type of heartTypes) {
                 probSum += type.probability;
-                if (rand <= probSum) {
+                if (heartRand <= probSum) {
                     selectedHeart = type;
                     break;
                 }
@@ -462,7 +475,6 @@
             heart.textContent = selectedHeart.symbol;
             heart.dataset.points = selectedHeart.points;
             
-            // Random position and movement
             const gameContent = document.getElementById('gameContent');
             const maxX = gameContent.clientWidth - 50;
             const maxY = gameContent.clientHeight - 50;
@@ -470,22 +482,55 @@
             heart.style.left = Math.random() * maxX + 'px';
             heart.style.top = '-50px';
             
-            // Add both click and touch events
             const catchHeart = function() {
-                score += parseInt(this.dataset.points);
+                const now = Date.now();
+                if (now - lastCatchTime < 1000) {
+                    combo++;
+                    if (combo > 2) {
+                        showComboText();
+                    }
+                } else {
+                    combo = 1;
+                }
+                lastCatchTime = now;
+
+                const points = parseInt(this.dataset.points) * multiplier;
+                score += points;
+                
+                // Show points feedback with multiplier
+                const feedback = document.createElement('div');
+                feedback.textContent = `+${points}`;
+                feedback.style.position = 'absolute';
+                feedback.style.left = this.style.left;
+                feedback.style.top = this.style.top;
+                feedback.style.color = '#ff69b4';
+                feedback.style.fontSize = '24px';
+                feedback.style.fontWeight = 'bold';
+                gameContent.appendChild(feedback);
+                
+                // Create heart burst effect
+                createHeartBurst(this.style.left, this.style.top);
+                
+                feedback.animate([
+                    { opacity: 1, transform: 'translateY(0)' },
+                    { opacity: 0, transform: 'translateY(-20px)' }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => feedback.remove();
+                
                 document.getElementById('score').textContent = score;
                 this.remove();
             };
             
             heart.onclick = catchHeart;
             heart.ontouchstart = function(e) {
-                e.preventDefault();  
+                e.preventDefault();
                 catchHeart.call(this);
             };
             
             gameContent.appendChild(heart);
             
-            // Slower animation (increased from 3000-5000 to 5000-8000 milliseconds)
             const duration = 5000 + Math.random() * 3000;
             const animation = heart.animate([
                 { top: '-50px' },
@@ -496,6 +541,228 @@
             });
             
             animation.onfinish = () => heart.remove();
+        }
+
+        function createPowerUp() {
+            const powerup = document.createElement('div');
+            powerup.className = 'game-powerup';
+            
+            // Random power-up type
+            const powerUpTypes = [
+                {symbol: '⭐', effect: 'doublePoints'},
+                {symbol: '🌟', effect: 'triplePoints'},
+                {symbol: '✨', effect: 'extraTime'}
+            ];
+            
+            const selectedPowerUp = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+            powerup.textContent = selectedPowerUp.symbol;
+            powerup.dataset.effect = selectedPowerUp.effect;
+            
+            const gameContent = document.getElementById('gameContent');
+            const maxX = gameContent.clientWidth - 50;
+            const maxY = gameContent.clientHeight - 50;
+            
+            powerup.style.left = Math.random() * maxX + 'px';
+            powerup.style.top = '-50px';
+            
+            const catchPowerUp = function() {
+                switch(this.dataset.effect) {
+                    case 'doublePoints':
+                        multiplier = 2;
+                        setTimeout(() => {
+                            multiplier = 1;
+                            updateMultiplierDisplay();
+                        }, 10000);
+                        break;
+                    case 'triplePoints':
+                        multiplier = 3;
+                        setTimeout(() => {
+                            multiplier = 1;
+                            updateMultiplierDisplay();
+                        }, 5000);
+                        break;
+                    case 'extraTime':
+                        // Slow down all current and new items for 5 seconds
+                        document.querySelectorAll('.game-heart, .game-flag').forEach(item => {
+                            item.animate([
+                                { transform: 'translateY(0)' }
+                            ], {
+                                duration: 5000,
+                                easing: 'linear'
+                            });
+                        });
+                        break;
+                }
+                
+                updateMultiplierDisplay();
+                
+                // Show power-up effect
+                const feedback = document.createElement('div');
+                feedback.textContent = `${this.dataset.effect.toUpperCase()}!`;
+                feedback.style.position = 'absolute';
+                feedback.style.left = this.style.left;
+                feedback.style.top = this.style.top;
+                feedback.style.color = '#ffd700';
+                feedback.style.fontSize = '24px';
+                feedback.style.fontWeight = 'bold';
+                gameContent.appendChild(feedback);
+                
+                feedback.animate([
+                    { opacity: 1, transform: 'scale(1)' },
+                    { opacity: 0, transform: 'scale(2)' }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => feedback.remove();
+                
+                this.remove();
+            };
+            
+            powerup.onclick = catchPowerUp;
+            powerup.ontouchstart = function(e) {
+                e.preventDefault();
+                catchPowerUp.call(this);
+            };
+            
+            gameContent.appendChild(powerup);
+            
+            const duration = 6000 + Math.random() * 3000;
+            const animation = powerup.animate([
+                { top: '-50px' },
+                { top: maxY + 'px' }
+            ], {
+                duration: duration,
+                easing: 'linear'
+            });
+            
+            animation.onfinish = () => powerup.remove();
+        }
+
+        function createFlag() {
+            const flag = document.createElement('div');
+            flag.className = 'game-flag';
+            flag.textContent = '🏳️‍🌈';
+            flag.dataset.points = -2;  // Reduce 2 points when collected
+            
+            const gameContent = document.getElementById('gameContent');
+            const maxX = gameContent.clientWidth - 50;
+            const maxY = gameContent.clientHeight - 50;
+            
+            flag.style.left = Math.random() * maxX + 'px';
+            flag.style.top = '-50px';
+            
+            // Add both click and touch events
+            const catchFlag = function() {
+                const points = parseInt(this.dataset.points);
+                score += points;
+                // Show negative points feedback
+                const feedback = document.createElement('div');
+                feedback.textContent = points;
+                feedback.style.position = 'absolute';
+                feedback.style.left = this.style.left;
+                feedback.style.top = this.style.top;
+                feedback.style.color = '#ff4136';
+                feedback.style.fontSize = '24px';
+                feedback.style.fontWeight = 'bold';
+                gameContent.appendChild(feedback);
+                
+                // Animate feedback
+                feedback.animate([
+                    { opacity: 1, transform: 'translateY(0)' },
+                    { opacity: 0, transform: 'translateY(-20px)' }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => feedback.remove();
+                
+                document.getElementById('score').textContent = score;
+                this.remove();
+            };
+            
+            flag.onclick = catchFlag;
+            flag.ontouchstart = function(e) {
+                e.preventDefault();
+                catchFlag.call(this);
+            };
+            
+            gameContent.appendChild(flag);
+            
+            // Animation
+            const duration = 5000 + Math.random() * 3000;
+            const animation = flag.animate([
+                { top: '-50px' },
+                { top: maxY + 'px' }
+            ], {
+                duration: duration,
+                easing: 'linear'
+            });
+            
+            animation.onfinish = () => flag.remove();
+        }
+
+        function createHeartBurst(x, y) {
+            const burst = document.createElement('div');
+            burst.className = 'special-effect';
+            burst.style.left = x;
+            burst.style.top = y;
+            
+            const particles = 8;
+            for (let i = 0; i < particles; i++) {
+                const particle = document.createElement('div');
+                particle.textContent = '💗';
+                particle.style.position = 'absolute';
+                particle.style.fontSize = '20px';
+                
+                const angle = (i / particles) * Math.PI * 2;
+                const distance = 50;
+                
+                particle.animate([
+                    { 
+                        transform: 'translate(-50%, -50%)',
+                        opacity: 1
+                    },
+                    { 
+                        transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                });
+                
+                burst.appendChild(particle);
+            }
+            
+            document.getElementById('gameContent').appendChild(burst);
+            setTimeout(() => burst.remove(), 1000);
+        }
+
+        function startGameplay() {
+            document.getElementById('gameMenu').style.display = 'none';
+            isPlaying = true;
+            gameInterval = setInterval(createHeart, 1500);
+        }
+
+        function closeGame() {
+            document.getElementById('gameContainer').style.display = 'none';
+            stopGame();
+        }
+
+        function stopGame() {
+            isPlaying = false;
+            clearInterval(gameInterval);
+            const hearts = document.getElementsByClassName('game-heart');
+            while(hearts.length > 0) {
+                hearts[0].remove();
+            }
+            const flags = document.getElementsByClassName('game-flag');
+            while(flags.length > 0) {
+                flags[0].remove();
+            }
+            const powerUps = document.getElementsByClassName('game-powerup');
+            while(powerUps.length > 0) {
+                powerUps[0].remove();
+            }
         }
     </script>
 </body>

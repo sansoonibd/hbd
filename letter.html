@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            background: #ffd1dc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .letter-container {
+            max-width: 800px;
+            width: 90%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .login-overlay {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ffd1dc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #ffd1dc;
+            color: #333;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #ffb6c1;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .letter-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 40px;
+            white-space: pre-line;
+        }
+
+        .signature {
+            text-align: right;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-top: 40px;
+        }
+
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            color: #333;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .letter-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-overlay" id="loginOverlay">
+        <h1>For You ❤️</h1>
+        <p>Please enter the password to read the letter ❤️</p>
+        <input type="password" id="letterPassword" placeholder="Enter password">
+        <button onclick="checkLetterPassword()">Enter</button>
+    </div>
+
+    <div class="letter-container" id="letterContent">
+        <h1>For You ❤️</h1>
+        <div class="letter-content">
+           
+I wasn't sure if I should start this letter by calling you my best friend or my girlfriend. Then I realized that "home" is the perfect word.
+
+Home is a safe place for everyone, and you are my safe place (sounded better in my head). Whether it's holding your soft hand, where I feel like the whole world is on mute, or running my fingers through your beautiful hair, or simply hearing your voice, you are my peace.
+
+You came into my life at the most unexpected time, and you truly changed everything. First, by being my best friend, we created so many wonderful memories together. But I was greedy—I wanted more. I adored everything about you. I loved talking to you for hours, eagerly looking forward to picking you up from the airport like a little kid. I cherished our car rides, buying you coffee, our sweet FaceTimes (Mohtarama), your outfit checks, and you showing me your nails. How could I not fall in love with you? How could I not fall in love with love? Now, not only are you my best friend, but you are also my girlfriend and my soulmate. And I'm sure it will always be this way, inshallah, as every day I wake up with even more love for you. I fall deeper in love with you as I discover more beautiful little details about you. You truly are my sunshine and my precious flower. Happy birthday ya habibti w rabena ykhaleeki leya. I love you.
+        </div>
+        <div class="signature">
+            - With love, Habibek
+        </div>
+    </div>
+    <a href="index.html" class="back-button">Back to Birthday Message ❤️</a>
+
+    <script>
+        function checkLetterPassword() {
+            const password = document.getElementById('letterPassword').value;
+            if (password === '1234') {
+                localStorage.setItem('isLetterLoggedIn', 'true');
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('letterContent').style.display = 'block';
+            } else {
+                alert('Incorrect password. Please try again!');
+            }
+        }
+
+        // Check if already logged in when page loads
+        window.onload = function() {
+            if (localStorage.getItem('isLetterLoggedIn') === 'true') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('letterContent').style.display = 'block';
+            }
+        };
+
+        // Add enter key support
+        document.getElementById('letterPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkLetterPassword();
+            }
+        });
+    </script>
+</body>
+</html>
