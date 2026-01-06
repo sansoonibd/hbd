@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Private Memories</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap"
+        rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -16,49 +19,57 @@
             justify-content: center;
             align-items: center;
         }
+
         .login-overlay {
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             max-width: 400px;
             width: 90%;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             display: none;
         }
+
         h1 {
             font-family: 'Playfair Display', serif;
             color: #333;
             margin-bottom: 20px;
         }
+
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             padding: 20px;
         }
+
         .gallery-item {
             position: relative;
             overflow: hidden;
             border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background: white;
             transition: transform 0.3s ease;
         }
+
         .gallery-item:hover {
             transform: scale(1.02);
         }
+
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
+
         .back-button {
             position: fixed;
             bottom: 20px;
@@ -68,13 +79,15 @@
             padding: 12px 24px;
             border-radius: 25px;
             text-decoration: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
             font-weight: bold;
         }
+
         .back-button:hover {
             transform: scale(1.05);
         }
+
         input {
             width: 100%;
             padding: 12px;
@@ -84,6 +97,7 @@
             font-size: 16px;
             box-sizing: border-box;
         }
+
         button {
             background: #ffd1dc;
             color: #333;
@@ -95,11 +109,13 @@
             transition: background-color 0.3s;
             margin-top: 10px;
         }
+
         button:hover {
             background: #ffb6c1;
         }
     </style>
 </head>
+
 <body>
     <div class="login-overlay" id="loginOverlay">
         <h1>Private Gallery</h1>
@@ -111,7 +127,7 @@
     <div class="container" id="privateContent">
         <h1>Our Private Memories ❤️</h1>
         <div class="gallery">
-        
+
             <div class="gallery-item">
                 <img src="priv 2.jpg" alt="Private Memory">
             </div>
@@ -157,7 +173,7 @@
             <div class="gallery-item">
                 <img src="priv 16.jpg" alt="Private Memory">
             </div>
-            
+
             <div class="gallery-item">
                 <img src="priv 18.jpg" alt="Private Memory">
             </div>
@@ -176,6 +192,36 @@
             <div class="gallery-item">
                 <img src="priv 23.jpg" alt="Private Memory">
             </div>
+            <div class="gallery-item">
+                <img src="priv24.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv25.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv26.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv27.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv28.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv29.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv30.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv31.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv32.jpg" alt="Private Memory">
+            </div>
+            <div class="gallery-item">
+                <img src="priv33.jpg" alt="Private Memory">
+            </div>
         </div>
         <a href="index.html" class="back-button">Back to Birthday Message ❤️</a>
     </div>
@@ -193,7 +239,7 @@
         }
 
         // Check if already logged in when page loads
-        window.onload = function() {
+        window.onload = function () {
             if (localStorage.getItem('isPrivateLoggedIn') === 'true') {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('privateContent').style.display = 'block';
@@ -201,11 +247,12 @@
         };
 
         // Add enter key support
-        document.getElementById('privatePassword').addEventListener('keypress', function(e) {
+        document.getElementById('privatePassword').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 checkPrivatePassword();
             }
         });
     </script>
 </body>
+
 </html>
